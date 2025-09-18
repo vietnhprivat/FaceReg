@@ -72,7 +72,7 @@ def scan_images():
 
             for obj in objs:
                 if isinstance(obj, dict) and "embedding" in obj:
-                    face_embedding = np.array(obj["embedding"])
+                    face_embedding = np.array(obj["embedding"], dtype=np.float32)
                     score = compare_embeddings(face_embedding, reference_embeddings)
                 else:
                     continue
@@ -81,7 +81,7 @@ def scan_images():
                     best_score = score
 
                 # If score is strong enough → match
-                if score > (1 - THRESHOLD):
+                if score > THRESHOLD:
                     match_found = True
                     # Save copy of matched image
                     shutil.copy(img_path, MATCHES_DIR / img_path.name)
