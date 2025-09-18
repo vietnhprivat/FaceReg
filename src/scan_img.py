@@ -4,8 +4,20 @@ from pathlib import Path
 from deepface import DeepFace
 import numpy as np
 import shutil
+import torch
 
-# Paths
+# Device check (CPU vs GPU)
+import torch
+
+if torch.cuda.is_available():
+    DEVICE = "cuda"
+elif torch.backends.mps.is_available():
+    DEVICE = "mps"
+else:
+    DEVICE = "cpu"
+
+print(DEVICE)
+
 REFERENCE_EMBEDDINGS = Path("data/output/reference_embeddings.json")
 TEST_DATA_DIR = Path("data/test_data")
 OUTPUT_DIR = Path("data/output")
@@ -13,12 +25,13 @@ MATCHES_DIR = OUTPUT_DIR / "matches"
 RESULTS_FILE = OUTPUT_DIR / "results.csv"
 
 # Threshold for cosine similarity (tune this!)
-# Smaller distance = closer match. ~0.4–0.6 is typical for ArcFace.
+# For ArcFace, cosine similarity > 0.45 ~ likely match
 THRESHOLD = 0.45  
 
-# Make sure output dirs exist
+# Ensure output directories exist
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 MATCHES_DIR.mkdir(parents=True, exist_ok=True)
+
 
 def load_reference_embeddings():
     with open(REFERENCE_EMBEDDINGS, "r") as f:
@@ -26,7 +39,7 @@ def load_reference_embeddings():
     return np.array(list(data.values()))
 
 def compare_embeddings(face_embedding, reference_embeddings):
-    # cosine similarity distance
+    """Cosine similarity comparison"""
     dot = np.dot(reference_embeddings, face_embedding)
     norm_ref = np.linalg.norm(reference_embeddings, axis=1)
     norm_face = np.linalg.norm(face_embedding)
@@ -40,7 +53,7 @@ def scan_images():
 
     for img_path in TEST_DATA_DIR.glob("*.*"):
         try:
-            # Detect faces + get embeddings
+            # Detect faces + extract embeddings
             objs = DeepFace.represent(
                 img_path.as_posix(),
                 model_name="ArcFace",
@@ -53,12 +66,11 @@ def scan_images():
                 results.append({"file": img_path.name, "match": False, "score": None})
                 continue
 
-            # If multiple faces, loop through them
+            # Loop over all detected faces in image
             match_found = False
             best_score = -1
 
             for obj in objs:
-                # Ensure obj is a dictionary before accessing "embedding"
                 if isinstance(obj, dict) and "embedding" in obj:
                     face_embedding = np.array(obj["embedding"])
                     score = compare_embeddings(face_embedding, reference_embeddings)
@@ -68,9 +80,10 @@ def scan_images():
                 if score > best_score:
                     best_score = score
 
-                if score > (1 - THRESHOLD):  # similarity above threshold
+                # If score is strong enough → match
+                if score > (1 - THRESHOLD):
                     match_found = True
-                    # save a copy of matched image
+                    # Save copy of matched image
                     shutil.copy(img_path, MATCHES_DIR / img_path.name)
                     break
 
@@ -86,7 +99,7 @@ def scan_images():
             print(f"[ERROR] {img_path.name}: {e}")
             results.append({"file": img_path.name, "match": False, "score": None})
 
-    # Save results to CSV
+    # Save all results to CSV
     df = pd.DataFrame(results)
     df.to_csv(RESULTS_FILE, index=False)
     print(f"\n✅ Results saved to {RESULTS_FILE}")
