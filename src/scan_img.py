@@ -102,8 +102,8 @@ def scan_images():
     # Save all results to CSV
     df = pd.DataFrame(results)
     df.to_csv(RESULTS_FILE, index=False)
-    print(f"\n✅ Results saved to {RESULTS_FILE}")
-    print(f"✅ Matches copied to {MATCHES_DIR}")
+    print(f"\n Results saved to {RESULTS_FILE}")
+    print(f" Matches copied to {MATCHES_DIR}")
 
 if __name__ == "__main__":
     scan_images()

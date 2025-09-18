@@ -40,7 +40,7 @@ def generate_reference_embeddings():
     with open(OUTPUT_FILE, "w") as f:
         json.dump(embeddings, f)
 
-    print(f"\n✅ Saved embeddings to {OUTPUT_FILE}")
+    print(f"\nSaved embeddings to {OUTPUT_FILE}")
 
 if __name__ == "__main__":
     generate_reference_embeddings()
