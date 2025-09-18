@@ -4,3 +4,4 @@ beautifulsoup4
 tqdm
 pandas
 deepface
+tf-keras
