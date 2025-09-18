@@ -41,7 +41,7 @@ def get_download_url(size_url: str) -> str | None:
         print(f" Multiple download links for {size_url}")
     return download_links[0] if download_links else None
 
-def save_image(photo_id: str, url: str, folder="data/output"):
+def save_image(photo_id: str, url: str, folder="data/marathon"):
     folder = Path(folder)
     folder.mkdir(parents=True, exist_ok=True)
 
@@ -116,7 +116,7 @@ if __name__ == "__main__":
                         total=len(subset), 
                         desc="Downloading images"):
         count +=1
-        img = save_image(pid, url, folder="data/output")
+        img = save_image(pid, url, folder="data/marathon")
         if img == True:
             print(count)
             break
