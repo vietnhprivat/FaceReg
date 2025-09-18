@@ -19,6 +19,8 @@ data/
 src/
   generate_embeddings.py
   scan_img.py
+  scraper.py
+  crawler.py
 ```
 
 ---
@@ -32,11 +34,8 @@ conda activate FaceReg
 # PyTorch (GPU enabled)
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
-# TensorFlow (use <2.11 for Windows GPU support)
-pip install "tensorflow<2.11"
-
 # Core packages
-pip install deepface opencv-python-headless pandas tqdm matplotlib
+pip install -r requirement.txt
 ```
 
 ---
