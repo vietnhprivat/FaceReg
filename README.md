@@ -1,7 +1,3 @@
-Got it 👍 — here’s a **simpler but still correct** `README.md` for your FaceReg project:
-
----
-
 # 🏃 FaceReg – Marathon Photo Finder
 
 FaceReg helps you **find yourself in marathon photos** using [DeepFace](https://github.com/serengil/deepface).
@@ -64,7 +60,3 @@ Matches are copied to `data/output/matches/` and a summary is saved in `data/out
 * ArcFace embeddings (PyTorch) → GPU if available.
 * RetinaFace detection (TensorFlow) → GPU only if TF < 2.11 on Windows.
 * Threshold for matching is configurable in `scan_img.py`.
-
----
-
-Do you want me to also add a **short example `results.csv` snippet** (just 2–3 lines) so people see what the output looks like?
